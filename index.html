@@ -3,92 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Temporary Email Service</title>
+  <title>Temp Mail Generator</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f6f9;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-    .container {
-      background: white;
-      padding: 30px;
-      border-radius: 12px;
-      box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
-      width: 400px;
-      text-align: center;
-    }
-    h2 {
-      margin-bottom: 20px;
-      color: #333;
-    }
-    .btn {
-      padding: 12px 18px;
-      margin: 10px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 16px;
-      font-weight: bold;
-    }
-    .btn-generate { background: #28a745; color: white; }
-    .btn-change { background: #ffc107; color: black; }
-    .btn-delete { background: #dc3545; color: white; }
-    .inbox {
-      margin-top: 20px;
-      padding: 15px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      background: #f9f9f9;
-      height: 150px;
-      overflow-y: auto;
-      text-align: left;
-    }
-    .email-box {
-      margin: 15px 0;
-      padding: 10px;
-      background: #eef;
-      border-radius: 6px;
-      font-weight: bold;
-    }
+    body { font-family: Arial, sans-serif; background: #f5f5f5; text-align: center; }
+    #email-box { background: white; padding: 15px; margin: 20px auto; width: 50%; border-radius: 10px; }
+    button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    #inbox { margin-top: 20px; }
+    .mail { background: white; padding: 10px; margin: 10px auto; width: 60%; border-radius: 5px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>📧 Temporary Email Service</h2>
 
-    <div class="email-box" id="emailBox">yourmail@tempmail.com</div>
-
-    <button class="btn btn-generate" onclick="generateMail()">New Mail Generate</button>
-    <button class="btn btn-change" onclick="changeMail()">Change Mail</button>
-    <button class="btn btn-delete" onclick="deleteMail()">Delete Mail</button>
-
-    <h3>📥 Inbox (OTP)</h3>
-    <div class="inbox" id="inbox">
-      <p>No messages yet...</p>
-    </div>
+  <h1>Temporary Email</h1>
+  <div id="email-box">
+    <p id="email">Loading...</p>
+    <button onclick="generateEmail()">New Email</button>
+    <button onclick="copyEmail()">Copy Email</button>
   </div>
 
+  <h2>Inbox</h2>
+  <div id="inbox">No messages yet...</div>
+
   <script>
-    function generateMail() {
-      document.getElementById("emailBox").innerText = "newmail" + Math.floor(Math.random()*1000) + "@tempmail.com";
-      document.getElementById("inbox").innerHTML = "<p>New email generated! Waiting for OTP...</p>";
+    let email = "";
+    let login = "";
+    let domain = "";
+
+    async function generateEmail() {
+      let res = await fetch("https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1");
+      let data = await res.json();
+      email = data[0];
+      document.getElementById("email").innerText = email;
+
+      // split email into login & domain
+      [login, domain] = email.split("@");
+
+      checkInbox();
     }
 
-    function changeMail() {
-      document.getElementById("emailBox").innerText = "changedmail" + Math.floor(Math.random()*1000) + "@tempmail.com";
-      document.getElementById("inbox").innerHTML = "<p>Email address changed! Waiting for OTP...</p>";
+    function copyEmail() {
+      navigator.clipboard.writeText(email);
+      alert("Email copied: " + email);
     }
 
-    function deleteMail() {
-      document.getElementById("emailBox").innerText = "----@deleted.com";
-      document.getElementById("inbox").innerHTML = "<p>Email deleted.</p>";
+    async function checkInbox() {
+      setInterval(async () => {
+        let res = await fetch(`https://www.1secmail.com/api/v1/?action=getMessages&login=${login}&domain=${domain}`);
+        let mails = await res.json();
+        let inboxDiv = document.getElementById("inbox");
+        inboxDiv.innerHTML = "";
+        if (mails.length === 0) {
+          inboxDiv.innerHTML = "No messages yet...";
+        } else {
+          mails.forEach(m => {
+            inboxDiv.innerHTML += `<div class="mail"><b>${m.from}</b><br>${m.subject}</div>`;
+          });
+        }
+      }, 5000); // check every 5 seconds
     }
+
+    // first load
+    generateEmail();
   </script>
+
 </body>
 </html>
