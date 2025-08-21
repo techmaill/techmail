@@ -2,30 +2,92 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>TechMail - Temporary Email</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Temporary Email Service</title>
   <style>
-    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
-    #emailBox { margin: 20px; padding: 10px; border: 1px solid #ccc; display: inline-block; }
-    button { padding: 10px 20px; background: green; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    button:hover { background: darkgreen; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+      width: 400px;
+      text-align: center;
+    }
+    h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+    .btn {
+      padding: 12px 18px;
+      margin: 10px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .btn-generate { background: #28a745; color: white; }
+    .btn-change { background: #ffc107; color: black; }
+    .btn-delete { background: #dc3545; color: white; }
+    .inbox {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #f9f9f9;
+      height: 150px;
+      overflow-y: auto;
+      text-align: left;
+    }
+    .email-box {
+      margin: 15px 0;
+      padding: 10px;
+      background: #eef;
+      border-radius: 6px;
+      font-weight: bold;
+    }
   </style>
 </head>
 <body>
-  <h1>Welcome to TechMail</h1>
-  <p>Click the button below to generate a temporary email:</p>
-  <button onclick="generateEmail()">Generate Email</button>
+  <div class="container">
+    <h2>📧 Temporary Email Service</h2>
 
-  <div id="emailBox"></div>
+    <div class="email-box" id="emailBox">yourmail@tempmail.com</div>
+
+    <button class="btn btn-generate" onclick="generateMail()">New Mail Generate</button>
+    <button class="btn btn-change" onclick="changeMail()">Change Mail</button>
+    <button class="btn btn-delete" onclick="deleteMail()">Delete Mail</button>
+
+    <h3>📥 Inbox (OTP)</h3>
+    <div class="inbox" id="inbox">
+      <p>No messages yet...</p>
+    </div>
+  </div>
 
   <script>
-    function generateEmail() {
-      const chars = "abcdefghijklmnopqrstuvwxyz1234567890";
-      let randomStr = "";
-      for (let i = 0; i < 8; i++) {
-        randomStr += chars.charAt(Math.floor(Math.random() * chars.length));
-      }
-      const email = randomStr + "@techmail.com";
-      document.getElementById("emailBox").innerText = email;
+    function generateMail() {
+      document.getElementById("emailBox").innerText = "newmail" + Math.floor(Math.random()*1000) + "@tempmail.com";
+      document.getElementById("inbox").innerHTML = "<p>New email generated! Waiting for OTP...</p>";
+    }
+
+    function changeMail() {
+      document.getElementById("emailBox").innerText = "changedmail" + Math.floor(Math.random()*1000) + "@tempmail.com";
+      document.getElementById("inbox").innerHTML = "<p>Email address changed! Waiting for OTP...</p>";
+    }
+
+    function deleteMail() {
+      document.getElementById("emailBox").innerText = "----@deleted.com";
+      document.getElementById("inbox").innerHTML = "<p>Email deleted.</p>";
     }
   </script>
 </body>
