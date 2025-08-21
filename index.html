@@ -2,36 +2,31 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Temp Mail</title>
+  <title>TechMail - Temporary Email</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: #f5f5f5;
-      margin: 0;
-      padding: 50px;
-    }
-    h1 {
-      color: #333;
-    }
-    button {
-      padding: 10px 20px;
-      font-size: 16px;
-      background: #28a745;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #218838;
-    }
+    body { font-family: Arial, sans-serif; text-align: center; margin-top: 50px; }
+    #emailBox { margin: 20px; padding: 10px; border: 1px solid #ccc; display: inline-block; }
+    button { padding: 10px 20px; background: green; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background: darkgreen; }
   </style>
 </head>
 <body>
-  <h1>Welcome to My Temp Mail Service</h1>
-  <p>Click the button to generate a temporary email (Demo)</p>
-  <button onclick="alert('Temporary email generated: test@demo.com')">Generate Email</button>
+  <h1>Welcome to TechMail</h1>
+  <p>Click the button below to generate a temporary email:</p>
+  <button onclick="generateEmail()">Generate Email</button>
+
+  <div id="emailBox"></div>
+
+  <script>
+    function generateEmail() {
+      const chars = "abcdefghijklmnopqrstuvwxyz1234567890";
+      let randomStr = "";
+      for (let i = 0; i < 8; i++) {
+        randomStr += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+      const email = randomStr + "@techmail.com";
+      document.getElementById("emailBox").innerText = email;
+    }
+  </script>
 </body>
 </html>
