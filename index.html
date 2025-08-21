@@ -27,32 +27,28 @@
   <script>
     let email = "";
     let login = "";
-    let domain = "";
+    let domain = "gmailcon.com";  // fixed domain
 
     async function generateEmail() {
       let res = await fetch("https://www.1secmail.com/api/v1/?action=genRandomMailbox&count=1");
       let data = await res.json();
-      email = data[0];
+      let temp = data[0];
+      [login] = temp.split("@"); // sirf login le liya
 
-      // split email into login & domain
-      [login, domain] = email.split("@");
-
-      // Show Gmail instead of temp domain
-      document.getElementById("email").innerText = login + "@gmail.com";
+      email = login + "@" + domain;
+      document.getElementById("email").innerText = email;
 
       checkInbox();
     }
 
     function copyEmail() {
-      // Copy Gmail-looking email (fake for display)
-      let fakeEmail = login + "@gmail.com";
-      navigator.clipboard.writeText(fakeEmail);
-      alert("Email copied: " + fakeEmail);
+      navigator.clipboard.writeText(email);
+      alert("Email copied: " + email);
     }
 
     async function checkInbox() {
       setInterval(async () => {
-        let res = await fetch(`https://www.1secmail.com/api/v1/?action=getMessages&login=${login}&domain=${domain}`);
+        let res = await fetch(`https://www.1secmail.com/api/v1/?action=getMessages&login=${login}&domain=1secmail.com`);
         let mails = await res.json();
         let inboxDiv = document.getElementById("inbox");
         inboxDiv.innerHTML = "";
